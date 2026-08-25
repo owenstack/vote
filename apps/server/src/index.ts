@@ -5,7 +5,7 @@ import { RPCHandler } from "@orpc/server/fetch";
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { createContext } from "@vote/api/context";
 import { appRouter } from "@vote/api/routers/index";
-import { createAuth } from "@vote/auth";
+import createAuth from "@vote/auth";
 import { env } from "@vote/env/server";
 import { initLogger } from "evlog";
 import {

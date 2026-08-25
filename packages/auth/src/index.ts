@@ -3,8 +3,9 @@ import * as schema from "@vote/db/schema/auth";
 import { env } from "@vote/env/server";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { admin, organization } from "better-auth/plugins";
 
-export function createAuth() {
+export default function createAuth() {
 	const db = createDb();
 	const isDev = env.NODE_ENV === "development";
 	return betterAuth({
@@ -47,5 +48,6 @@ export function createAuth() {
 				domain: "vote.efobi.dev",
 			},
 		},
+		plugins: [organization(), admin()],
 	});
 }

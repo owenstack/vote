@@ -9,7 +9,9 @@
 			"default": "./src/*.ts"
 		}
 	},
-	"scripts": {},
+	"scripts": {
+		"auth:generate": "bunx auth generate --config ./src/index.ts --output ../db/schema/auth.ts"
+	},
 	"dependencies": {
 		"@vote/db": "workspace:*",
 		"@vote/env": "workspace:*",
