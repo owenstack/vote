@@ -1,0 +1,24 @@
+{
+  "name": "@vote/auth",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@vote/db": "workspace:*",
+    "@vote/env": "workspace:*",
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@vote/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}

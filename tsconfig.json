@@ -1,0 +1,3 @@
+{
+  "extends": "@vote/config/tsconfig.base.json"
+}
