@@ -7,14 +7,14 @@ export const Route = createFileRoute("/_auth")({
 	beforeLoad: async () => {
 		const session = await getSession();
 		if (!session.data) {
-			const data = localStorage.getItem("org:slug")
-			if (data) {
+			const slug = localStorage.getItem("org:slug");
+			if (slug) {
 				throw redirect({
-					to: '/$slug/login',
+					to: "/$slug/login",
 					params: {
-						slug: data
-					}
-				})
+						slug,
+					},
+				});
 			}
 			throw redirect({
 				to: "/login",

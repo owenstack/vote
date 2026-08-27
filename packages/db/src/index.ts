@@ -6,3 +6,5 @@ import * as schema from "./schema";
 export function createDb() {
 	return drizzle(env.DB, { schema });
 }
+
+export const db = createDb();

@@ -50,6 +50,7 @@
 		"@cloudflare/workers-types": "catalog:",
 		"@types/node": "catalog:",
 		"@vote/config": "workspace:*",
+		"shadcn": "^4.19.0",
 		"turbo": "^2.10.7",
 		"typescript": "catalog:"
 	},

@@ -1,11 +1,9 @@
 import type { RouterClient } from "@orpc/server";
-
-import { protectedProcedure, publicProcedure } from "../index";
+import { protectedProcedure } from "../index";
+import { userRouter } from "./user";
 
 export const appRouter = {
-	healthCheck: publicProcedure.handler(() => {
-		return "OK";
-	}),
+	user: userRouter,
 	privateData: protectedProcedure.handler(({ context }) => {
 		return {
 			message: "This is private",
