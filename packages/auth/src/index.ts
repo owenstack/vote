@@ -11,7 +11,7 @@ export default function createAuth() {
 	return betterAuth({
 		database: drizzleAdapter(db, {
 			provider: "sqlite",
-			schema: schema,
+			schema,
 		}),
 		trustedOrigins: [
 			"https://*.vote.efobi.dev",

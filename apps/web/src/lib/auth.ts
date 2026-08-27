@@ -37,9 +37,10 @@ function getServerUrl(url: string) {
 
 	return `http://localhost:3000${normalized}`;
 }
-export const authClient = createAuthClient({
-	// better-auth derives its route-matching base from this URL's path, so the
-	// public auth path must equal the server-side mount (/api/auth everywhere)
-	baseURL: new URL("/api/auth", getServerUrl(env.VITE_SERVER_URL)).toString(),
-	plugins: [organizationClient(), adminClient()],
-});
+export const { getSession, useSession, signIn, signUp, admin, organization } =
+	createAuthClient({
+		// better-auth derives its route-matching base from this URL's path, so the
+		// public auth path must equal the server-side mount (/api/auth everywhere)
+		baseURL: new URL("/api/auth", getServerUrl(env.VITE_SERVER_URL)).toString(),
+		plugins: [organizationClient(), adminClient()],
+	});

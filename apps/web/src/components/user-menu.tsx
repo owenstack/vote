@@ -11,11 +11,11 @@ import {
 } from "@vote/ui/components/dropdown-menu";
 import { Skeleton } from "@vote/ui/components/skeleton";
 
-import { authClient } from "@/lib/auth-client";
+import { useSession } from "@/lib/auth";
 
 export default function UserMenu() {
 	const navigate = useNavigate();
-	const { data: session, isPending } = authClient.useSession();
+	const { data: session, isPending } = useSession();
 
 	if (isPending) {
 		return <Skeleton className="h-9 w-24" />;
@@ -42,7 +42,7 @@ export default function UserMenu() {
 					<DropdownMenuItem
 						variant="destructive"
 						onClick={() => {
-							authClient.signOut({
+							signOut({
 								fetchOptions: {
 									onSuccess: () => {
 										navigate({
