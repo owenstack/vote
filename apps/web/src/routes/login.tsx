@@ -105,9 +105,11 @@ function RouteComponent() {
 												<Combobox
 													items={orgs}
 													itemToStringValue={(org) => (org as Org).name}
-													aria-invalid={isInvalid}
 												>
-													<ComboboxInput placeholder="Choose your university" />
+													<ComboboxInput
+														aria-invalid={isInvalid}
+														placeholder="Choose your university"
+													/>
 													<ComboboxContent>
 														<ComboboxEmpty>No universities found</ComboboxEmpty>
 														<ComboboxList>

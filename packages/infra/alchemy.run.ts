@@ -22,6 +22,7 @@ export const server = Cloudflare.Worker("server", {
 		BETTER_AUTH_SECRET: Config.redacted("BETTER_AUTH_SECRET"),
 		BETTER_AUTH_URL: Config.string("VITE_SERVER_URL"),
 		NODE_ENV: Config.withDefault(Config.string("NODE_ENV"), "production"),
+		RESEND_API_KEY: Config.redacted("RESEND_API_KEY"),
 	},
 	dev: {
 		port: 3000,
