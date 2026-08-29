@@ -49,6 +49,14 @@ bun run dev
 Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
 The API is running at [http://localhost:3000](http://localhost:3000).
 
+The development server applies the repeatable seed only when `NODE_ENV=development`. Production deployments never run it. Use any of these accounts to sign in:
+
+| Email | Password |
+| --- | --- |
+| `admin@predev.test` | `predev1234` |
+| `staff@predev.test` | `predev1234` |
+| `officer@predev.test` | `predev1234` |
+
 ## UI Customization
 
 React web apps in this stack share shadcn/ui primitives through `packages/ui`.
@@ -103,7 +111,7 @@ cd packages/infra && bunx alchemy deploy --stage production
 
 ## Project Structure
 
-```
+```mermaid
 vote/
 ├── apps/
 │   ├── web/         # Frontend application (React + TanStack Router)

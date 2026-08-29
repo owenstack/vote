@@ -6,6 +6,7 @@ import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4";
 import { createContext } from "@vote/api/context";
 import { appRouter } from "@vote/api/routers/index";
 import createAuth from "@vote/auth";
+import { seedDevelopmentData } from "@vote/db/seed-data";
 import { env } from "@vote/env/server";
 import { initLogger } from "evlog";
 import {
@@ -21,6 +22,16 @@ initLogger({
 });
 
 const app = new Hono<EvlogVariables>();
+
+let developmentSeed: Promise<void> | undefined;
+
+if (env.NODE_ENV === "development") {
+	app.use("*", async (_c, next) => {
+		developmentSeed ??= seedDevelopmentData();
+		await developmentSeed;
+		await next();
+	});
+}
 
 app.use(evlog());
 app.use("*", async (c, next) => {

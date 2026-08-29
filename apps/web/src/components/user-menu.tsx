@@ -10,8 +10,7 @@ import {
 	DropdownMenuTrigger,
 } from "@vote/ui/components/dropdown-menu";
 import { Skeleton } from "@vote/ui/components/skeleton";
-
-import { useSession } from "@/lib/auth";
+import { signOut, useSession } from "@/lib/auth";
 
 export default function UserMenu() {
 	const navigate = useNavigate();

@@ -64,25 +64,27 @@ export const Route = createFileRoute("/$slug/_protected")({
 			});
 		}
 
-		const userRole: string = activeMember.role;
+		const userRole: string =
+			session.data.user.role === "admin" ? "admin" : activeMember.role;
 		const path = context.location.pathname;
 		const isDashboard =
 			path === `/${context.params.slug}` ||
 			path === `/${context.params.slug}/dashboard`;
+		const isEnrollment = path === `/${context.params.slug}/enroll`;
 		const isVoting = path === `/${context.params.slug}/elections`;
 		const canAccess =
 			userRole === "admin" ||
-			userRole === "orgAdmin" ||
-			(userRole === "orgMember" && isDashboard) ||
-			(userRole === "voter" && isVoting);
+			(userRole === "electionAdmin" && (isDashboard || isVoting)) ||
+			(userRole === "enrollmentStaff" && (isDashboard || isEnrollment)) ||
+			(userRole === "pollOfficer" && isVoting);
 
 		if (!canAccess) {
 			const fallback =
-				userRole === "voter"
+				userRole === "pollOfficer"
 					? "/$slug/elections"
-					: userRole === "admin" ||
-							userRole === "orgAdmin" ||
-							userRole === "orgMember"
+					: userRole === "enrollmentStaff" ||
+							userRole === "electionAdmin" ||
+							userRole === "admin"
 						? "/$slug/dashboard"
 						: "/$slug/login";
 			throw redirect({
@@ -101,27 +103,29 @@ export const Route = createFileRoute("/$slug/_protected")({
 function RouteComponent() {
 	const { slug } = Route.useParams();
 	const { userRole } = Route.useRouteContext();
-	// there are four roles: admin (can access the entire website), orgAdmin (can access the organization dashboard and other routes), orgMember (can access the organization dashboard), and voter (can only access the voting page)
+	const dashboardLink: Link = {
+		to: `/${slug}/dashboard`,
+		label: "Dashboard",
+		icon: LayoutDashboard,
+	};
 	const links: Link[] =
-		userRole === "voter"
+		userRole === "pollOfficer"
 			? [{ to: `/${slug}/elections`, label: "Elections", icon: Vote }]
-			: userRole === "orgMember"
+			: userRole === "enrollmentStaff"
 				? [
-						{
-							to: `/${slug}/dashboard`,
-							label: "Dashboard",
-							icon: LayoutDashboard,
-						},
-					]
-				: [
-						{
-							to: `/${slug}/dashboard`,
-							label: "Dashboard",
-							icon: LayoutDashboard,
-						},
+						dashboardLink,
 						{ to: `/${slug}/enroll`, label: "Enroll", icon: ScanFace },
-						{ to: `/${slug}/elections`, label: "Elections", icon: Vote },
-					];
+					]
+				: userRole === "electionAdmin"
+					? [
+							dashboardLink,
+							{ to: `/${slug}/elections`, label: "Elections", icon: Vote },
+						]
+					: [
+							dashboardLink,
+							{ to: `/${slug}/enroll`, label: "Enroll", icon: ScanFace },
+							{ to: `/${slug}/elections`, label: "Elections", icon: Vote },
+						];
 	return (
 		<SidebarProvider>
 			<AppSidebar links={links} />

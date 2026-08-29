@@ -31,11 +31,13 @@
 	"type": "module",
 	"scripts": {
 		"dev": "turbo run dev",
+		"predev": "bun run db:seed",
 		"build": "turbo run build",
 		"check-types": "turbo run check-types",
 		"dev:web": "turbo run dev -F web --",
 		"dev:server": "turbo run dev -F server --",
 		"db:generate": "turbo run db:generate -F @vote/db --",
+		"db:seed": "turbo run db:seed -F @vote/db --",
 		"deploy": "turbo run deploy -F @vote/infra --",
 		"destroy": "turbo run destroy -F @vote/infra --",
 		"check": "biome check --write ."

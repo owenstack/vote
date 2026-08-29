@@ -104,7 +104,16 @@ function RouteComponent() {
 												<FieldLabel>University</FieldLabel>
 												<Combobox
 													items={orgs}
-													itemToStringValue={(org) => (org as Org).name}
+													value={
+														orgs.find(
+															(org) => org.slug === field.state.value,
+														) ?? null
+													}
+													onValueChange={(org) =>
+														field.handleChange(org?.slug ?? "")
+													}
+													itemToStringLabel={(org) => (org as Org).name}
+													itemToStringValue={(org) => (org as Org).slug}
 												>
 													<ComboboxInput
 														aria-invalid={isInvalid}
@@ -114,7 +123,8 @@ function RouteComponent() {
 														<ComboboxEmpty>No universities found</ComboboxEmpty>
 														<ComboboxList>
 															{(org: Org) => (
-																<ComboboxItem key={org.id} value={org.slug}>
+																<ComboboxItem key={org.id} value={org}>
+																	{" "}
 																	<Item>
 																		<ItemMedia variant="image">
 																			<img
