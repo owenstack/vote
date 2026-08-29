@@ -1,4 +1,5 @@
 import { useForm } from "@tanstack/react-form";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@vote/ui/components/button";
 import {
@@ -17,7 +18,8 @@ import {
 import { Input } from "@vote/ui/components/input";
 import { toast } from "sonner";
 import z from "zod";
-import { signIn } from "@/lib/auth";
+import { organization, signIn } from "@/lib/auth";
+import { orpc } from "@/lib/orpc";
 
 const formSchema = z.object({
 	email: z.email(),
@@ -29,6 +31,7 @@ const formSchema = z.object({
 
 export function Login({ to }: { to: `/${string}` }) {
 	const navigate = useNavigate();
+	const { data: orgs } = useQuery(orpc.user.misc.getOrgs.queryOptions());
 	const form = useForm({
 		defaultValues: {
 			email: "",
@@ -40,16 +43,30 @@ export function Login({ to }: { to: `/${string}` }) {
 		},
 		onSubmit: async ({ value }) => {
 			const { email, password, rememberMe } = value;
-			toast.promise(signIn.email({ email, password, rememberMe }), {
-				loading: "Signing in...",
-				success: () => {
-					navigate({ to: to as string });
-					return "Signed in successfully!";
+			toast.promise(
+				async () => {
+					const { error } = await signIn.email({ email, password, rememberMe });
+					if (error) return toast.error(error.message);
+					if (to !== "/admin") {
+						const chosenOrg = orgs?.find((org) => org.slug === to.slice(1));
+						if (!chosenOrg) return toast.error("Organization not found");
+						const { slug: organizationSlug, id: organizationId } = chosenOrg;
+						const { error: setActiveError } = await organization.setActive({
+							organizationId,
+							organizationSlug,
+						});
+						if (setActiveError) return toast.error(setActiveError.message);
+						navigate({ to: to as string });
+					}
 				},
-				error: (err) => {
-					return err instanceof Error ? err.message : "Internal server error";
+				{
+					loading: "Signing in...",
+					success: "Signed in successfully!",
+					error: (err) => {
+						return err instanceof Error ? err.message : "Internal server error";
+					},
 				},
-			});
+			);
 		},
 	});
 

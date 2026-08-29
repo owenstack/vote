@@ -32,7 +32,7 @@ import {
 import { Logo } from "@vote/ui/components/logo";
 import { useLocalStorage } from "usehooks-ts";
 import z from "zod";
-import { client, orpc } from "@/utils/orpc";
+import { client, orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/login")({
 	beforeLoad: () => {

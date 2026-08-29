@@ -10,9 +10,10 @@ import {
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import type { AppRouterClient } from "@vote/api/routers/index";
 import { Toaster } from "@vote/ui/components/sonner";
+import { TooltipProvider } from "@vote/ui/components/tooltip";
 import { useState } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
-import { link, type orpc } from "@/utils/orpc";
+import { link, type orpc } from "@/lib/orpc";
 
 import "../index.css";
 
@@ -55,7 +56,9 @@ function RootComponent() {
 				disableTransitionOnChange
 				storageKey="vite-ui-theme"
 			>
-				<Outlet />
+				<TooltipProvider>
+					<Outlet />
+				</TooltipProvider>
 				<Toaster richColors />
 			</ThemeProvider>
 			<TanStackRouterDevtools position="bottom-left" />

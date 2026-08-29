@@ -4,8 +4,6 @@ import type { Context } from "./context";
 
 export const o = os.$context<Context>();
 
-export const publicProcedure = o;
-
 const requireAuth = o.middleware(async ({ context, next }) => {
 	if (!context.session?.user) {
 		throw new ORPCError("UNAUTHORIZED");
@@ -17,4 +15,52 @@ const requireAuth = o.middleware(async ({ context, next }) => {
 	});
 });
 
+export type OrganizationRole = "admin" | "orgAdmin" | "orgMember" | "voter";
+
+const organizationRoles = new Set<OrganizationRole>([
+	"admin",
+	"orgAdmin",
+	"orgMember",
+	"voter",
+]);
+
+const requireOrg = o.middleware(async ({ context, next }) => {
+	const session = context.session;
+	const organizationId = session?.session.activeOrganizationId;
+	const role = session?.user.role;
+
+	if (
+		!organizationId ||
+		!role ||
+		!organizationRoles.has(role as OrganizationRole)
+	) {
+		throw new ORPCError("FORBIDDEN");
+	}
+
+	if (role !== "admin") {
+		try {
+			const member = await context.auth.api.getActiveMember({
+				headers: context.headers,
+			});
+
+			if (member.organizationId !== organizationId) {
+				throw new ORPCError("FORBIDDEN");
+			}
+		} catch (error) {
+			if (error instanceof ORPCError) throw error;
+			throw new ORPCError("FORBIDDEN");
+		}
+	}
+
+	return next({
+		context: {
+			session,
+			organizationId,
+			role: role as OrganizationRole,
+		},
+	});
+});
+
+export const publicProcedure = o;
 export const protectedProcedure = publicProcedure.use(requireAuth);
+export const orgProcedure = protectedProcedure.use(requireOrg);
