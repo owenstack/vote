@@ -27,29 +27,26 @@ const organizationRoles = new Set<OrganizationRole>([
 const requireOrg = o.middleware(async ({ context, next }) => {
 	const session = context.session;
 	const organizationId = session?.session.activeOrganizationId;
-	const role = session?.user.role;
+	let activeMember;
 
+	try {
+		activeMember = await context.auth.api.getActiveMember({
+			headers: context.headers,
+		});
+	} catch (error) {
+		if (error instanceof ORPCError) throw error;
+		throw new ORPCError("FORBIDDEN");
+	}
+
+	const role = activeMember?.role;
 	if (
 		!organizationId ||
+		!activeMember ||
+		activeMember.organizationId !== organizationId ||
 		!role ||
 		!organizationRoles.has(role as OrganizationRole)
 	) {
 		throw new ORPCError("FORBIDDEN");
-	}
-
-	if (role !== "admin") {
-		try {
-			const member = await context.auth.api.getActiveMember({
-				headers: context.headers,
-			});
-
-			if (member.organizationId !== organizationId) {
-				throw new ORPCError("FORBIDDEN");
-			}
-		} catch (error) {
-			if (error instanceof ORPCError) throw error;
-			throw new ORPCError("FORBIDDEN");
-		}
 	}
 
 	return next({

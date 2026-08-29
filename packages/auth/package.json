@@ -10,7 +10,7 @@
 		}
 	},
 	"scripts": {
-		"auth:generate": "bunx auth generate --config ./src/index.ts --output ../db/schema/auth.ts"
+		"auth:generate": "bunx auth generate --config ./src/index.ts --output ../db/src/schema/auth.ts"
 	},
 	"dependencies": {
 		"@vote/db": "workspace:*",

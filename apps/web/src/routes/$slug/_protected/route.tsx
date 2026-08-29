@@ -64,7 +64,7 @@ export const Route = createFileRoute("/$slug/_protected")({
 			});
 		}
 
-		const userRole = session.data.user.role;
+		const userRole: string = activeMember.role;
 		const path = context.location.pathname;
 		const isDashboard =
 			path === `/${context.params.slug}` ||

@@ -4,6 +4,18 @@ import { env } from "@vote/env/server";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin, organization } from "better-auth/plugins";
+import { createAccessControl } from "better-auth/plugins/access";
+
+const statement = {
+	election: ["create", "publish", "delete"],
+	student: ["enroll"],
+	session: ["verify", "generate"],
+} as const;
+
+const ac = createAccessControl(statement);
+const electionAdmin = ac.newRole({ election: ["create", "publish", "delete"] });
+const enrollmentStaff = ac.newRole({ student: ["enroll"] });
+const pollOfficer = ac.newRole({ session: ["verify", "generate"] });
 
 export default function createAuth() {
 	const db = createDb();
@@ -48,6 +60,12 @@ export default function createAuth() {
 				domain: "vote.efobi.dev",
 			},
 		},
-		plugins: [organization(), admin()],
+		plugins: [
+			organization({
+				ac,
+				roles: { electionAdmin, enrollmentStaff, pollOfficer },
+			}),
+			admin(),
+		],
 	});
 }
